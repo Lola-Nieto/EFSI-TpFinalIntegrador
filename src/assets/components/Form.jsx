@@ -10,12 +10,6 @@ function FormPedido() {
   const categorías = ["alimentación", "transporte", "ocio", "expensas", "farmacia"];
   const tipos = ["Ingreso", "Gasto"];
 
-
-  const validarForm = () => {
-    if (!descripción.trim() || !categoría.trim() || !tipo.trim() || !monto || !isDateValid(fecha)) return false;
-    return true;
-  };
-
   const handleSubmit = (event) => {
     event.preventDefault();
     const valido = validarForm();
