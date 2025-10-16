@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import {validacionTexto, validacionMonto, validacionFecha} from "../helpers/validationForm.js"
 
 function FormPedido() {
   const [descripción, setDescripción] = useState("");
@@ -7,8 +8,17 @@ function FormPedido() {
   const [monto, setMonto] = useState(0);
   const [fecha, setFecha] = useState();
 
+  const [esValido, setEsValido] = useState();
+
   const categorías = ["alimentación", "transporte", "ocio", "expensas", "farmacia"];
   const tipos = ["Ingreso", "Gasto"];
+
+
+  const validarForm = () => {
+    if (!validacionTexto(descripción) || !categoría.trim() || !tipo.trim() || validacionMonto(monto) || !validacionFecha(fecha)) return false;
+    return true;
+  };
+
 
   const handleSubmit = (event) => {
     event.preventDefault();
