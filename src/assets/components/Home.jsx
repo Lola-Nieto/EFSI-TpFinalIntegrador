@@ -1,5 +1,5 @@
-import Listado from "./Card";
-import Filtros from "./Card";
+import Listado from "./Listado.jsx";
+import Filtros from "./Filtros.jsx";
 
 
 
