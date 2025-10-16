@@ -1,32 +1,21 @@
-import {BrowserRouter, Routes, Route} from "react-router-dom"
-
-import Home from "./assets/pages/Home.jsx";
-import Edición from "./assets/components/Edición.jsx";
-import Estadísticas from "./assets/components/Estadisticas.jsx";
-import Form from "./assets/components/Form.jsx";
-
-import Layout from "./assets/components/Layout.jsx";
-
-import './App.css'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Listado from '../src/assets/pages/Listado'
+import Nuevo from '../src/assets/pages/Nuevo';
+import Resumen from '../src/assets/pages/Resumen';
+import Ajustes from '../src/assets/pages/NotFound';
 
 function App() {
-
   return (
-    <>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Home/>}></Route>
-            <Route path="/editar/:id" element={<Edición />}></Route>
-            <Route path="/nuevo" element={<Form />}></Route>
-            <Route path="/resumen" element={<Estadísticas />}></Route>
-            <Route path="/ajustes" element={<Ajustes />}></Route>
-            <Route path="*" element={<NotFound/>}> </Route>
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </>
-  )
+    <Router>
+      <Routes>
+        <Route path="/" element={<Listado />} />
+        <Route path="/nuevo" element={<Nuevo />} />
+        <Route path="/editar/:id" element={<Nuevo />} />
+        <Route path="/resumen" element={<Resumen />} />
+        <Route path="/ajustes" element={<Ajustes />} />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;
