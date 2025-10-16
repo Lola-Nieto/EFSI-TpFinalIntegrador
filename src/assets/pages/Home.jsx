@@ -1,5 +1,5 @@
-import Listado from "./Listado.jsx";
-import Filtros from "./Filtros.jsx";
+import Listado from "../components/Listado.jsx";
+import Filtros from "../components/Filtros.jsx";
 
 
 
