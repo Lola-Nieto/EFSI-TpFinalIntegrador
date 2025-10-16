@@ -1,4 +1,4 @@
-const Edición = () => {
+const Listado = () => {
 
     return (
       <>
@@ -7,4 +7,4 @@ const Edición = () => {
     )
   }
   
-  export default Edición;
+  export default Listado;
