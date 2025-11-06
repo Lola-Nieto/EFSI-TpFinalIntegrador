@@ -1,31 +1,37 @@
-import { useTheme } from '../context/useTheme';
-import { saveMovimientos } from '../helpers/storage';
+import React from 'react'
+import { useBudget } from '../hooks/useBudget.js'
 
 export default function Ajustes() {
-  const { theme, toggle } = useTheme();
-
-  const resetAll = () => {
-    if (confirm('¿Seguro que querés borrar todos los movimientos?')) {
-      saveMovimientos([]);
-      alert('Datos borrados.');
-    }
-  };
+  const { settings, setTheme, reset } = useBudget()
+  function toggleTheme() { setTheme(settings.theme === 'dark' ? 'light' : 'dark') }
 
   return (
-    <div className="page page--stack">
-      <h1 className="page-title">Ajustes</h1>
+    <div className="card">
+      <h2 style={{marginTop:0}}>Ajustes</h2>
 
-      <section className="card">
-        <h2 className="card-title">Tema</h2>
-        <p>Tema actual: <b>{theme}</b></p>
-        <button onClick={toggle} className="btn btn-outline">Cambiar a {theme === 'dark' ? 'claro' : 'oscuro'}</button>
-      </section>
+      <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', gap:12, marginBottom:18}}>
+        <div>
+          <div style={{fontWeight:600}}>Tema</div>
+          <div className="helper">Activá/desactivá el modo oscuro.</div>
+        </div>
+        <button className="btn ghost" onClick={toggleTheme}>
+          {settings.theme === 'dark' ? 'Cambiar a claro' : 'Cambiar a oscuro'}
+        </button>
+      </div>
 
-      <section className="card">
-        <h2 className="card-title">Datos</h2>
-        <p>Podés limpiar todos los movimientos guardados en el navegador.</p>
-        <button onClick={resetAll} className="btn btn-danger">Limpiar localStorage</button>
-      </section>
+      <hr style={{border:'none', borderTop:'1px solid rgba(0,0,0,.08)', margin:'16px 0'}} />
+
+      <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', gap:12}}>
+        <div>
+          <div style={{fontWeight:600}}>Limpieza de datos</div>
+          <div className="helper">Resetea todos los movimientos guardados en el navegador.</div>
+        </div>
+        <button className="btn danger" onClick={()=>{
+          if (confirm('Esto eliminará todos los movimientos del localStorage. ¿Continuar?')) reset()
+        }}>
+          Limpiar datos
+        </button>
+      </div>
     </div>
-  );
+  )
 }

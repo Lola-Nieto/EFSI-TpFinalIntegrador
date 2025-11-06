@@ -1,39 +1,35 @@
-import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import Formulario from './Form';
-import { getMovimientoById, updateMovimiento } from '../helpers/storage';
+import React, { useMemo } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
+import { useBudget } from '../hooks/useBudget.js'
+import TransactionForm from '../components/TransactionForm.jsx'
+import EmptyState from '../components/EmptyState.jsx'
 
-export default function Edicion() {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const [initialValues, setInitialValues] = useState(null);
+export default function Editar() {
+  const { id } = useParams()
+  const nav = useNavigate()
+  const { items, update, remove } = useBudget()
+  const current = useMemo(()=> items.find(i=>i.id===id), [items, id])
 
-  useEffect(() => {
-    const m = getMovimientoById(id);
-    if (!m) { navigate('/'); return; }
-    setInitialValues({
-      descripcion: m.descripcion ?? '',
-      categoria: m.categoria ?? '',
-      tipo: m.tipo ?? '',
-      monto: String(m.monto ?? ''),
-      fecha: m.fecha ?? '',
-    });
-  }, [id, navigate]);
+  if (!current) return <EmptyState title="Movimiento no encontrado" hint="Volvé al listado para continuar." />
 
-  const onSubmit = (values) => {
-    const payload = { ...values, monto: Number(values.monto) };
-    updateMovimiento(id, payload);
-    navigate('/');
-  };
-
-  if (!initialValues) return null;
+  async function handleSubmit(values, { setSubmitting }) {
+    update(id, { ...values, amount: Number(values.amount) })
+    setSubmitting(false)
+    nav('/')
+  }
 
   return (
-    <div className="page">
-      <h1 className="page-title">Editar movimiento</h1>
-      <div className="card">
-        <Formulario initialValues={initialValues} onSubmit={onSubmit} />
+    <>
+      <div className="card" style={{marginBottom:12, display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+        <h2 style={{margin:0}}>Editar movimiento</h2>
+        <div className="actions">
+          <button className="btn danger" onClick={()=>{
+            if (confirm('¿Eliminar este movimiento?')) { remove(id); nav('/') }
+          }}>Eliminar</button>
+        </div>
       </div>
-    </div>
-  );
+
+      <TransactionForm initialValues={current} onSubmit={handleSubmit} onCancel={()=>nav('/')} />
+    </>
+  )
 }

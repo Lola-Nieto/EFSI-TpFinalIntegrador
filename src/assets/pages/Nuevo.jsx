@@ -1,25 +1,22 @@
-import Formulario from './Form';
-import { addMovimiento } from '../helpers/storage';
-import { useNavigate } from 'react-router-dom';
+import React from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useBudget } from '../hooks/useBudget.js'
+import TransactionForm from '../components/TransactionForm.jsx'
 
 export default function Nuevo() {
-  const navigate = useNavigate();
+  const { add } = useBudget()
+  const nav = useNavigate()
 
-  const initialValues = { descripcion: '', categoria: '', tipo: '', monto: '', fecha: '' };
-
-  const onSubmit = (values) => {
-    const payload = { ...values, monto: Number(values.monto) };
-    addMovimiento(payload);
-    navigate('/');
-  };
-  
+  async function handleSubmit(values, { setSubmitting }) {
+    add({ ...values, amount: Number(values.amount) })
+    setSubmitting(false)
+    nav('/')
+  }
 
   return (
-    <div className="page">
-      <h1 className="page-title">Nuevo movimiento</h1>
-      <div className="card">
-        <Formulario initialValues={initialValues} onSubmit={onSubmit} />
-      </div>
-    </div>
-  );
+    <>
+      <h2 className="card" style={{marginBottom:12}}>Nuevo movimiento</h2>
+      <TransactionForm onSubmit={handleSubmit} onCancel={()=>nav('/')} />
+    </>
+  )
 }

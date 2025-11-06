@@ -1,17 +1,32 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react'
 
-const useLocalStorage = (key, initialValue) => {
-  const [storedValue, setStoredValue] = useState(() => {
-    const item = localStorage.getItem(key);
-    return item ? JSON.parse(item) : initialValue;
-  });
+const isBrowser = () => typeof window !== 'undefined' && !!window.localStorage
 
-  const setValue = (value) => {
-    setStoredValue(value);
-    localStorage.setItem(key, JSON.stringify(value));
-  };
+export default function useLocalStorage(key, initialValue) {
+  const getInitial = () => {
+    const fallback = typeof initialValue === 'function' ? initialValue() : initialValue
+    if (!isBrowser()) return fallback
+    try {
+      const raw = window.localStorage.getItem(key)
+      return raw ? JSON.parse(raw) : fallback
+    } catch (err) {
+      // Puede fallar por JSON inválido o storage deshabilitado
+      console.warn(`[useLocalStorage] read error for key "${key}":`, err)
+      return fallback
+    }
+  }
 
-  return [storedValue, setValue];
-};
+  const [state, setState] = useState(getInitial)
 
-export default useLocalStorage;
+  useEffect(() => {
+    if (!isBrowser()) return
+    try {
+      window.localStorage.setItem(key, JSON.stringify(state))
+    } catch (err) {
+      // Puede fallar por cuota llena o modo privado
+      console.warn(`[useLocalStorage] write error for key "${key}":`, err)
+    }
+  }, [key, state])
+
+  return [state, setState]
+}
